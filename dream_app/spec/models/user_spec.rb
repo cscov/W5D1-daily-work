@@ -6,8 +6,8 @@ RSpec.describe User, type: :model do
   it { should validate_presence_of(:session_token)}
   it { should validate_length_of(:password).is_at_least(6)}
 
-  subject(:user1) { User.new(usernamee: 'jack', password: 'abcdef')}
-  it { should validate_uniqueness_of(:username) }
+  subject(:user1) { User.new(username: 'jack', password: 'abcdef')}
+  it { should validate_uniqueness_of(:username), :case_sensitive => false }
 
   describe 'password encryption' do
     it "does not save password to the database" do
@@ -38,9 +38,9 @@ RSpec.describe User, type: :model do
   describe 'class method' do
     it 'should find a user by username and password' do
       user1 = User.create!(username: 'jack', password: 'abcdef')
-      user2 = User.create!(username: 'jack', password: '123456')
-      expect(User.find_by_credentials(username: 'jack', password: 'abcdef')).to include(user1)
-      expect(User.find_by_credentials(username: 'jack', password: 'abcdef')).not_to include(user2)
+      user2 = User.create!(username: 'rose', password: '123456')
+      expect(User.find_by_credentials('jack', 'abcdef')).to eq(user1)
+      expect(User.find_by_credentials('jack', 'abcdef')).not_to eq(user2)
     end
   end
 end
