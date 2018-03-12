@@ -26,6 +26,7 @@ RSpec.describe UsersController, type: :controller do
       end
       it 'redirects to the user\'s show page ' do
         post :create, params: { user: {username: 'jack', password: 'abcdef' } }
+        user = User.find_by(username: 'jack')
         expect(response).to redirect_to(user_url(user))
       end
     end
@@ -55,7 +56,8 @@ RSpec.describe UsersController, type: :controller do
 
   describe "GET #show" do
     it "shows the user's profile" do
-      get :show
+      user = User.create!(username: 'jack', password: 'abcdef')
+      get :show, params: { id: user.id }
       expect(response).to render_template(:show)
     end
   end
